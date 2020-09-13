@@ -1,0 +1,63 @@
+replicaCount: 1
+
+env:
+  database: "off"
+
+ingressController:
+  installCRDs: false
+  enabled: false
+
+dblessConfig:
+  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
+  configMap: ""
+  # Or the configuration is passed in full-text below
+  config:
+    _format_version: "1.1"
+    services:
+      - name: mocky
+        url: http://www.mocky.io/v2/5ca725833400002c4876b363
+        routes:
+        - name: mocky
+          paths:
+          - "/mocky"
+      - name: nginxhostname
+        url: http://nginx-hostname
+        routes:
+        - name: hostname
+          paths:
+          - "/kong/nginx-hostname"
+      - name: httpbin
+        url: http://httpbin
+        routes:
+        - name: httpbin
+          paths:
+          - "/kong/httpbin"
+
+proxy:
+  # Enable creating a Kubernetes service for the proxy
+  enabled: true
+  type: ClusterIP
+  annotations: {}
+
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+
+  tls:
+    # Enable HTTPS listen for the proxy
+    enabled: false
+  
+  stream: {}
+
+  ingress:
+    # Enable/disable exposure using ingress.
+    enabled: true
+    hosts: ["localhost"]
+    
+    annotations: {}
+    # Ingress path.
+    path: /kong
+
+  externalIPs: []
