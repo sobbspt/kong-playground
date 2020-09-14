@@ -1,4 +1,4 @@
-replicaCount: 1
+replicaCount: 3
 
 env:
   database: "off"
@@ -25,13 +25,19 @@ dblessConfig:
         routes:
         - name: hostname
           paths:
-          - "/kong/nginx-hostname"
+          - "/gw/nginx-hostname"
       - name: httpbin
         url: http://httpbin
         routes:
         - name: httpbin
           paths:
-          - "/kong/httpbin"
+          - "/gw/httpbin"
+    plugins:
+      - name: correlation-id
+        config: 
+          header_name: X-Correlation-ID
+          generator: uuid#counter
+          echo_downstream: false
 
 proxy:
   # Enable creating a Kubernetes service for the proxy
@@ -58,6 +64,4 @@ proxy:
     
     annotations: {}
     # Ingress path.
-    path: /kong
-
-  externalIPs: []
+    path: /gw
