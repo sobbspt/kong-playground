@@ -7,38 +7,6 @@ ingressController:
   installCRDs: false
   enabled: false
 
-dblessConfig:
-  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
-  configMap: ""
-  # Or the configuration is passed in full-text below
-  config:
-    _format_version: "1.1"
-    services:
-      - name: mocky
-        url: http://www.mocky.io/v2/5ca725833400002c4876b363
-        routes:
-        - name: mocky
-          paths:
-          - "/mocky"
-      - name: nginxhostname
-        url: http://nginx-hostname
-        routes:
-        - name: hostname
-          paths:
-          - "/gw/nginx-hostname"
-      - name: httpbin
-        url: http://httpbin
-        routes:
-        - name: httpbin
-          paths:
-          - "/gw/httpbin"
-    plugins:
-      - name: correlation-id
-        config: 
-          header_name: X-Correlation-ID
-          generator: uuid#counter
-          echo_downstream: false
-
 proxy:
   # Enable creating a Kubernetes service for the proxy
   enabled: true
@@ -65,3 +33,7 @@ proxy:
     annotations: {}
     # Ingress path.
     path: /gw
+
+dblessConfig:
+  # Either Kong's configuration is managed from an existing ConfigMap (with Key: kong.yml)
+  configMap: "kong-config"
